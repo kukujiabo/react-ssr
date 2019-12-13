@@ -1,15 +1,15 @@
 import axios from 'axios'
 
-const GET_LIST = 'INDEX/GET_LIST'
+const GET_LIST = 'USER/GET_LIST'
 
 const changeList = list => ({
   type: GET_LIST,
-  list
+  ulist: list
 })
 
-export const getIndexList = (host) => {
+export const getUserList = (host) => {
   return (dispatch, getState, axiosInstance) => {
-    return axios.get(`http://${host}/api/course/list`)
+    return axios.get(`http://${host}/api/user2/list`)
     .then(res => {
       const {list} = res.data
       dispatch(changeList(list))
@@ -18,7 +18,7 @@ export const getIndexList = (host) => {
 }
 
 const defaultState = {
-  list: []
+  ulist: []
 }
 
 export default (state = defaultState, action) => {
@@ -26,7 +26,7 @@ export default (state = defaultState, action) => {
     case GET_LIST:
       const newState = {
         ...state,
-        list: action.list
+        ulist: action.ulist
       }
       return newState
     default:

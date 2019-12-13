@@ -11,14 +11,17 @@
 
 import React from 'react'
 import ReactDom from 'react-dom'
-import {BrowserRouter} from 'react-router-dom'
-import App from '../src/App'
-import store from '../src/store/store'
+import {BrowserRouter, Route} from 'react-router-dom'
+import routes from '../src/App'
+import {getClientStore} from '../src/store/store'
+import Header from '../src/components/Header'
 import {Provider} from 'react-redux'
 
-const Page = (<Provider store={store}>
+const Page = (<Provider store={getClientStore()}>
   <BrowserRouter>
-    {App}
+    <Header></Header>
+    {routes.map(route => <Route {...route}></Route>)}
   </BrowserRouter>
 </Provider>)
+
 ReactDom.hydrate(Page, document.getElementById('root'))
