@@ -12,18 +12,19 @@ import {StaticRouter, matchPath, Route }  from 'react-router-dom'
 import {getServerStore} from '../src/store/store'
 import Header from '../src/components/Header'
 import {Provider} from 'react-redux'
+import proxy from 'http-proxy-middleware'
 import express from 'express'
 import routes from '../src/App'
-import axios from 'axios'
+// import axios from 'axios'
 
 const app = express()
 
 const store = getServerStore()
 
-const forward = axios.create({
-  baseURL: 'http://127.0.0.1:8080',
-  headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }
-})
+// const forward = axios.create({
+//   baseURL: 'http://127.0.0.1:8080',
+//   headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' }
+// })
 
 /**
  * 设置服务器静态资源目录
@@ -33,17 +34,22 @@ app.use(express.static('public'))
 /**
  * 匹配 前缀是 /api/的 路由，匹配成功则转发到 mock 的接口
  */
-app.get('/api/*', (req, res) => {
-  forward({
-    method: req.method.toLocaleLowerCase(),
-    url: req.originalUrl,
-    data: req.body
-  }).then(res2 => {
-    res.send(res2.data)
-  }).catch(err => {
-    // todo
-  })
-})
+// app.get('/api/*', (req, res) => {
+//   forward({
+//     method: req.method.toLocaleLowerCase(),
+//     url: req.originalUrl,
+//     data: req.body
+//   }).then(res2 => {
+//     res.send(res2.data)
+//   }).catch(err => {
+//     // todo
+//   })
+// })
+
+/**
+ * 使用 proxy 更方便
+ */
+app.get('/api/*', proxy({ target: 'http://127.0.0.1:8080', changeOrigin: true }))
 
 /**
  * 包裹一层promise 捕获异常，这样 promise.all 就不会接收到异常
