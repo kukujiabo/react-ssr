@@ -55,14 +55,20 @@ app.get('/api/*', proxy({ target: 'http://127.0.0.1:8080', changeOrigin: true })
  * 包裹一层promise 捕获异常，这样 promise.all 就不会接收到异常
  * @param {*} promiseFunc 
  */
-const promiseWrapper = (promiseFunc) => {
-  return new Promise((resolve, reject) => {
-    resolve(promiseFunc())
-  }).then(res => {
-    console.log(res)
-  }).catch(err => {
-    console.log(err)
-  })
+const promiseWrapper = (pendingPromise) => {
+  // return new Promise((resolve, reject) => {
+  //   resolve(pendingPromise)
+  // }).then(res => {
+  //   console.log(res, 'success.')
+  // }).catch(err => {
+  //   console.log(err, 'error.')
+  // })
+  /**
+   * catch 即可 2019-12-16 01:43 
+   */
+  pendingPromise.catch(err => {
+    console.log('error occur: ', err)
+  }) 
 }
 
 app.get('*', (req, res) => {
