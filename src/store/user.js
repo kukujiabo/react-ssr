@@ -9,7 +9,7 @@ const changeList = list => ({
 
 export const getUserList = (host) => {
   return (dispatch, getState, axiosInstance) => {
-    return axios.get(`http://${host}/api/user2/list`)
+    return axios.get(`http://${host}/api/user/list`)
     .then(res => {
       const {list} = res.data
       dispatch(changeList(list))

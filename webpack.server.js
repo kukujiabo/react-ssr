@@ -1,7 +1,6 @@
 
 const path = require('path')
 const nodeExternals = require('webpack-node-externals')
-console.log(nodeExternals(), 707)
 module.exports = {
   target: 'node',
   mode: 'development',
@@ -24,6 +23,10 @@ module.exports = {
       {
         test : /\.json$/,
         loader : 'json-loader'
+      },
+      {
+        test: /\.css$/,
+        loader: [ 'isomorphic-style-loader', 'css-loader' ]
       }
     ]
   }

@@ -11,7 +11,7 @@
 
 import React from 'react'
 import ReactDom from 'react-dom'
-import {BrowserRouter, Route} from 'react-router-dom'
+import {BrowserRouter, Route,Switch} from 'react-router-dom'
 import routes from '../src/App'
 import {getClientStore} from '../src/store/store'
 import Header from '../src/components/Header'
@@ -20,7 +20,9 @@ import {Provider} from 'react-redux'
 const Page = (<Provider store={getClientStore()}>
   <BrowserRouter>
     <Header></Header>
+    <Switch>
     {routes.map(route => <Route {...route}></Route>)}
+    </Switch>
   </BrowserRouter>
 </Provider>)
 

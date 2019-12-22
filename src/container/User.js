@@ -1,12 +1,16 @@
 import React, {useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 import {getUserList} from '../store/user'
+import {Redirect} from 'react-router-dom'
 
 function User(props) {
   useEffect(() => {
     if (!props.ulist.length)
       props.getUserList(window.location.host)
   }, [])
+  if (!props.location.search) {
+    return <Redirect to="/login"></Redirect>
+  }
   /**
    * 如果在这里请求数据就可以首页在服务器端渲染数据
    */

@@ -8,7 +8,7 @@
  */
 import React from 'react'
 import { renderToString } from 'react-dom/server'
-import {StaticRouter, matchPath, Route }  from 'react-router-dom'
+import {StaticRouter, matchPath, Route, Switch }  from 'react-router-dom'
 import {getServerStore} from '../src/store/store'
 import Header from '../src/components/Header'
 import {Provider} from 'react-redux'
@@ -83,20 +83,31 @@ app.get('*', (req, res) => {
     }
   })
   Promise.all( promises.map(promis => { return promiseWrapper(promis) }) ).then(() => {
+    const context = {}
     const content = renderToString(
       <Provider store={store}>
-        <StaticRouter location={req.url}>
+        <StaticRouter location={req.url} context={context}>
           <Header></Header>
+          <Switch>
           {
             routes.map(route => <Route {...route}></Route>)
           }
+          </Switch>
         </StaticRouter>
       </Provider>
     )
+    console.log('context: ', context)
+    if (context.statuscode) {
+      res.status(context.statuscode)
+    } else if (context.action === 'REPLACE') {
+      res.status(301, context.url)
+    }
+
     const htmlString = `
       <html>
         <head>
           <meta charset="utf-8" />
+          <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
           <title>My react ssr</title>
         </head>
         <body>
