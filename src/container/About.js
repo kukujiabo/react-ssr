@@ -1,11 +1,13 @@
 import React, { useState } from 'react'
+import styles from './About.css'
+import WithStyle from '../WithStyle'
 
 function About(props) {
   const jsxStr = <div>
-    <h1>About Us.</h1>
+    <h1 className={styles.title}>About Us.</h1>
   </div>
   return jsxStr
 }
 
-export default About
+export default WithStyle(About, styles)
 

@@ -15,6 +15,8 @@ import {Provider} from 'react-redux'
 import proxy from 'http-proxy-middleware'
 import express from 'express'
 import routes from '../src/App'
+import fs from 'fs'
+import path from 'path'
 // import axios from 'axios'
 
 const app = express()
@@ -71,7 +73,18 @@ const promiseWrapper = (pendingPromise) => {
   }) 
 }
 
+function csrRender(res) {
+  const filename = path.resolve(process.cwd(), 'public/index.csr.html')
+  const html = fs.readFileSync(filename, 'utf-8')
+  return res.status(200).send(html)
+}
+
 app.get('*', (req, res) => {
+
+  if (req.query._mode === 'csr') {
+    return csrRender(res)
+  }
+
   const promises = []
   routes.some(route => {
     const match = matchPath(req.path, route)
@@ -83,32 +96,32 @@ app.get('*', (req, res) => {
     }
   })
   Promise.all( promises.map(promis => { return promiseWrapper(promis) }) ).then(() => {
-    const context = {}
+    const context = { css: [] }
     const content = renderToString(
       <Provider store={store}>
         <StaticRouter location={req.url} context={context}>
           <Header></Header>
           <Switch>
           {
-            routes.map(route => <Route {...route}></Route>)
+            routes.map(route => <Route key={route.key} {...route}></Route>)
           }
           </Switch>
         </StaticRouter>
       </Provider>
     )
-    console.log('context: ', context)
     if (context.statuscode) {
       res.status(context.statuscode)
     } else if (context.action === 'REPLACE') {
       res.status(301, context.url)
     }
-
+    const css = context.css.join('\n')
     const htmlString = `
       <html>
         <head>
           <meta charset="utf-8" />
           <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
           <title>My react ssr</title>
+          <style>${css}</style>
         </head>
         <body>
           <div id="root">${content}</div>

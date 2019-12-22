@@ -21,9 +21,13 @@ const Page = (<Provider store={getClientStore()}>
   <BrowserRouter>
     <Header></Header>
     <Switch>
-    {routes.map(route => <Route {...route}></Route>)}
+    {routes.map(route => <Route key={route.key} {...route}></Route>)}
     </Switch>
   </BrowserRouter>
 </Provider>)
 
-ReactDom.hydrate(Page, document.getElementById('root'))
+if (window.__context) {
+  ReactDom.hydrate(Page, document.getElementById('root'))
+} else {
+  ReactDom.render(Page, document.getElementById('root'))
+}

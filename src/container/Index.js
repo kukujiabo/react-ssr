@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 import {getIndexList} from '../store/index'
+import styles from './Index.css'
+import WithStyle from '../WithStyle'
 
 function Index(props) {
   useEffect(() => {
@@ -10,8 +12,8 @@ function Index(props) {
   /**
    * 如果在这里请求数据就可以首页在服务器端渲染数据
    */
-  return <div>
-    <h1>Index Page.</h1>
+  return <div className={styles.container}>
+    <h1 className={styles.title}>Index Page.</h1>
     <hr/>
     <div>
       <ul>
@@ -31,5 +33,5 @@ Index.loadData = (store) => {
 export default connect(
   state=>({ list: state.index.list }),
   {getIndexList}
-)(Index)
+)(WithStyle(Index, styles))
 

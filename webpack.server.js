@@ -26,7 +26,12 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        loader: [ 'isomorphic-style-loader', 'css-loader' ]
+        loader: [ 'isomorphic-style-loader', {
+          loader: 'css-loader',
+          options: {
+            modules: true
+          }
+        }]
       }
     ]
   }
